@@ -1,3 +1,8 @@
+/**
+	Authors: Jonah Tuchow, Tom Choi
+	
+*/
+
 public class County{
 	private int ID;
 	private double[] vector;
