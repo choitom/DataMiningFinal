@@ -1,6 +1,13 @@
 /**
 	Authors: Jonah Tuchow, Tom Choi
 	
+	Implementation of CURE(Clustering Using REpresentatives)
+	algorithm which works as follows
+		1. Pick a random sample of points
+		2. Cluster sample points hierarchically to create the initial cluster
+			(We decided to use Agglomerative Clustering)
+		3. Pick representative points from the initial cluster
+		4. For each data point, find the cluster that has the closest representative point
 */
 
 import java.io.*;
@@ -23,7 +30,7 @@ public class CURE{
 	}
 	
 	public void cluster(){
-		// First part: pick representative points
+		// First part: pick representative points using agglomerative clustering
 		ArrayList<Cluster> clusters = new ArrayList<Cluster>();
 		ArrayList<Double> sses = new ArrayList<Double>();
 		for(int i = 0; i < samples.length; i++){
@@ -38,30 +45,37 @@ public class CURE{
 			sses.add(SSEs(clusters));
 		}
 		
+		int n = 10;
 		for(Cluster c : clusters){
-			System.out.println(c.size());
-			c.print();
+			c.pickRepresentatives(n);
+			c.moveRepresentatives();
 		}
-		
-		/*
-		CODE FOR DETERMINING NUMBER OF CLUSTERS
-		
-		ArrayList<Double> sses = new ArrayList<Double>();
-		for(int i = 0; i < samples.length; i++){
-			Cluster c = new Cluster();
-			c.add(samples[i]);
-			clusters.add(c);
-		}
-		sses.add(SSEs(clusters));
-		while(clusters.size() > 1){
-			mergeCluster(clusters);
-			sses.add(SSEs(clusters));
-		}
-		exportCSV(sses);
-		*/
-		
 		
 		// Second part: assign all the other data points
+		for(int i = 0; i < counties.length; i++){
+			County county = counties[i];
+			
+			// find the closest representative point
+			double min_distance = Double.MAX_VALUE;
+			int min_cluster_index = -1;
+			for(int j = 0; j < clusters.size(); j++){
+				Cluster c = clusters.get(j);
+				ArrayList<County> representatives = c.getRepresentatives();
+				for(County rep : representatives){
+					double dist = distance(county.getVector(), rep.getVector());
+					if(dist < min_distance){
+						min_distance = dist;
+						min_cluster_index = j;
+					}
+				}
+			}
+			// assign data point
+			clusters.get(min_cluster_index).addDataPoint(county);
+		}
+		
+		for(Cluster c : clusters){
+			c.printDataPoints();
+		}
 	}
 	
 	// export SSE values into .csv file
@@ -81,7 +95,6 @@ public class CURE{
 	
 	// use centroid distance to measure distance between clusters
 	private void mergeCluster(ArrayList<Cluster> clusters){
-		
 		// find two closest clusters
 		double min_dist = Double.MAX_VALUE;
 		Cluster min1 = null;
@@ -98,7 +111,6 @@ public class CURE{
 				}
 			}
 		}
-		
 		// merge
 		min1.mergeCluster(min2);
 		
