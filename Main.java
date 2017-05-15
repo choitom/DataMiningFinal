@@ -59,7 +59,7 @@ public class Main{
 		
 		int line_count = 0;
 		while(line_count < 5){
-			String[] line = scan.nextLine().split("\t");
+			String[] line = scan.nextLine().split(" ");
 			String value = line[1];
 			switch(line_count){
 				case 0:
