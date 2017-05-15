@@ -12,12 +12,9 @@ import java.util.*;
 
 public class Main{
 	public static void main(String[] args) throws IOException{
-		if(args.length < 1){
-			System.out.println("Require decade as an argument e.g. 1970, 1980, ...!");
-			System.exit(0);
-		}
-		String str_decade = args[0];
-		int decade = Integer.parseInt(str_decade);
+		argCheck(args);
+		int decade = Integer.parseInt(args[0]);
+		String distance_type = args[1];
 		
 		// read input file
 		String input_file = "Education.csv";
@@ -49,8 +46,57 @@ public class Main{
 			}
 		}
 		
-		CURE cure = new CURE(counties, 0.1);
+		// read parameters
+		double CURE_fraction = -1;
+		int CURE_cluster_size = -1;
+		int CURE_num_rep = -1;
+		int DBSCAN_min_pts = -1;
+		double DBSCAN_radius = -1;
+		
+		String param_file = "param.txt";
+		file = new File(param_file);
+		scan = new Scanner(file);
+		
+		int line_count = 0;
+		while(line_count < 5){
+			String[] line = scan.nextLine().split("\t");
+			String value = line[1];
+			switch(line_count){
+				case 0:
+					CURE_fraction = Double.parseDouble(value);
+					break;
+				case 1:
+					CURE_cluster_size = Integer.parseInt(value);
+					break;
+				case 2:
+					CURE_num_rep = Integer.parseInt(value);
+					break;
+				case 3:
+					DBSCAN_min_pts = Integer.parseInt(value);
+					break;
+				case 4:
+					DBSCAN_radius = Double.parseDouble(value);
+					break;
+				default:
+					System.err.println("Error\n");
+					System.exit(0);
+					break;
+			}
+			line_count++;
+		}
+		
+		CURE cure = new CURE(counties, distance_type, CURE_fraction, CURE_cluster_size, CURE_num_rep);
 		cure.cluster();
-		//DBSCAN dbscan = new DBSCAN(counties);
+		
+		DBSCAN dbscan = new DBSCAN(counties, distance_type, DBSCAN_min_pts, DBSCAN_radius);
+		dbscan.cluster();
+	}
+	
+	private static void argCheck(String[] args){
+		if(args.length < 2){
+			System.out.println("Please Enter: java Main Decade Distance_Type");
+			System.out.println("(Ex) java Main 2010 manhattan  OR  java Main 2000 euclidean");
+			System.exit(0);
+		}
 	}
 }

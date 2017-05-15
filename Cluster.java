@@ -16,8 +16,10 @@ public class Cluster{
 	private ArrayList<County> dataPoints;
 	private ArrayList<County> representatives;
 	private double[] centroid;
+	private String distance_type;
 	
-	public Cluster(){
+	public Cluster(String distance_type){
+		this.distance_type = distance_type;
 		this.cluster = new ArrayList<County>();
 		this.dataPoints = new ArrayList<County>();
 		this.representatives = new ArrayList<County>();
@@ -126,30 +128,25 @@ public class Cluster{
 		return this.cluster.size();
 	}
 	
-	// print out cluster centroid and its data points
-	public void printRepresentatives(){
-		System.out.println("Centroid: [" + centroid[0] + "," + centroid[1] + "," + centroid[2] + "," + centroid[3] + "]");
-		for(County c : cluster){
-			c.print();
-		}
-		System.out.println("-------------------------------------------------");
-	}
-	
-	public void printDataPoints(){
-		System.out.println("Centroid: [" + centroid[0] + "," + centroid[1] + "," + centroid[2] + "," + centroid[3] + "]");
-		for(County c : dataPoints){
-			c.print();
-		}
-		System.out.println("-------------------------------------------------");
+	// print out cluster information such as centroid, number of data points
+	public void print(){
+		System.out.println("Centroid: [" + centroid[0] + "," + centroid[1] + "," + centroid[2] + "," + centroid[3] + "], Size: " + dataPoints.size());
 	}
 	
 	// euclidean distance of two 4 dimensional vectors
 	private double distance(double[] v1, double[] v2){
-		double distance = 0;
-		for(int i = 0; i < v1.length; i++){
-			distance += Math.pow(v1[i]-v2[i],2);
+		double dist = 0;
+		if(distance_type.equals("manhattan")){
+			for(int i = 0; i < v1.length; i++){
+				dist += Math.abs(v1[i]-v2[i]);
+			}	
+		}else{
+			for(int i = 0; i < v1.length; i++){
+				dist += Math.pow(v1[i]-v2[i], 2);
+			}
+			dist = Math.sqrt(dist);
 		}
-		return Math.sqrt(distance);
+		return dist;
 	}
 	
 	private void updateCentroid(){

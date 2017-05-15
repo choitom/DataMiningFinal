@@ -1,0 +1,13 @@
+CURE_FRACTION:	0.1
+CURE_CLUSTER_SIZE:	6
+CURE_NUM_REP:	10
+DBSCAN_MIN_PTS:	4
+DBSCAN_RADIUS:	2.6
+
+###
+CURE_FRACTION 		-> fraction of sample data points
+CURE_CLUSTER_SIZE 	-> the number of clusters to terminate agglomerative clustering
+CURE_NUM_REP		-> number of representative points for each cluster
+DBSCAN_MIN_PTS		-> number of neighbors to determine core-object
+DBSCAN_RADIUS		-> radius(distance) to check for neighbors
+###

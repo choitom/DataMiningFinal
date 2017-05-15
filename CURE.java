@@ -16,11 +16,17 @@ import java.util.*;
 public class CURE{
 	private County[] counties;
 	private County[] samples;
+	private String distance_type;
+	private int cluster_size;	// number of clusters to have
+	private int num_rep;		// number of representative points
 	
-	public CURE(ArrayList<County> c, double fraction){
+	public CURE(ArrayList<County> c, String distance_type, double fraction, int cluster_size, int num_rep){
 		int sample_size = (int)(c.size() * fraction);
+		this.distance_type = distance_type;
 		this.counties = new County[c.size()];
 		this.samples = new County[sample_size];
+		this.cluster_size = cluster_size;
+		this.num_rep = num_rep;
 		
 		int index = 0;
 		for(County county : c){
@@ -34,20 +40,20 @@ public class CURE{
 		ArrayList<Cluster> clusters = new ArrayList<Cluster>();
 		ArrayList<Double> sses = new ArrayList<Double>();
 		for(int i = 0; i < samples.length; i++){
-			Cluster c = new Cluster();
+			Cluster c = new Cluster(distance_type);
 			c.add(samples[i]);
 			clusters.add(c);
 		}
 		
 		sses.add(SSEs(clusters));
-		while(clusters.size() > 6){
+		while(clusters.size() > cluster_size){
 			mergeCluster(clusters);
 			sses.add(SSEs(clusters));
 		}
 		
-		int n = 10;
+		// for each cluster, pick as many representative points as num_rep
 		for(Cluster c : clusters){
-			c.pickRepresentatives(n);
+			c.pickRepresentatives(num_rep);
 			c.moveRepresentatives();
 		}
 		
@@ -73,8 +79,12 @@ public class CURE{
 			clusters.get(min_cluster_index).addDataPoint(county);
 		}
 		
+		int id = 0;
+		System.out.println("\n\tCURE(Clusting Using REpresentatives) Result\n");
 		for(Cluster c : clusters){
-			c.printDataPoints();
+			System.out.print("Cluster("+ id + ") -> ");
+			c.print();
+			id++;
 		}
 	}
 	
@@ -120,11 +130,18 @@ public class CURE{
 	
 	// euclidean distance of two 4 dimensional vectors
 	private double distance(double[] v1, double[] v2){
-		double distance = 0;
-		for(int i = 0; i < v1.length; i++){
-			distance += Math.pow(v1[i]-v2[i],2);
+		double dist = 0;
+		if(distance_type.equals("manhattan")){
+			for(int i = 0; i < v1.length; i++){
+				dist += Math.abs(v1[i]-v2[i]);
+			}	
+		}else{
+			for(int i = 0; i < v1.length; i++){
+				dist += Math.pow(v1[i]-v2[i], 2);
+			}
+			dist = Math.sqrt(dist);
 		}
-		return Math.sqrt(distance);
+		return dist;
 	}
 	
 	// randomly shuffle county array and select the first 'sample_size' counties
@@ -143,6 +160,7 @@ public class CURE{
 		}
 	}
 	
+	// return the sum of errors of all clusters
 	private double SSEs(ArrayList<Cluster> clusters){
 		double sum = 0;
 		for(Cluster c : clusters){
