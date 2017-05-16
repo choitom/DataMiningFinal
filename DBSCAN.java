@@ -55,7 +55,6 @@ public class DBSCAN{
 			System.out.println("There exist no core-object with the given parameters");
 			System.exit(0);
 		}
-		counties.remove(initial_point);
 	}
 	
 	public void cluster(){
@@ -66,7 +65,7 @@ public class DBSCAN{
 		while(!counties.isEmpty()){
 			// Core-object
 			if(isCoreObject(current)){
-				current_cluster = new DBSCluster(current);
+				current_cluster = new DBSCluster();
 				
 				// repository of adjacent core-objects
 				stack = new ArrayDeque<County>();
@@ -118,7 +117,6 @@ public class DBSCAN{
 			
 			// pick a new point that is either noise or core-object
 			current = pickValidPoint();
-			//System.out.println(counties.size());
 		}
 		
 		
@@ -127,7 +125,6 @@ public class DBSCAN{
 		for(DBSCluster d : clusters){
 			System.out.println("Cluster(" + cluster_ID + "): " + d.size());
 			cluster_ID++;
-			//d.print();
 		}
 		System.out.println("NOISE: " + NOISE.size());
 	}

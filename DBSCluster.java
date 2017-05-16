@@ -9,9 +9,8 @@ import java.util.*;
 public class DBSCluster{
 	private ArrayList<County> cluster;
 	
-	public DBSCluster(County core){
+	public DBSCluster(){
 		this.cluster = new ArrayList<County>();
-		add(core);
 	}
 	
 	public void add(County c){
