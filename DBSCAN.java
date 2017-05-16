@@ -61,7 +61,7 @@ public class DBSCAN{
 	public void cluster(){
 		County current = initial_point;
 		DBSCluster current_cluster;
-		ArrayDeque<County> queue;
+		Deque<County> stack;
 		
 		while(!counties.isEmpty()){
 			// Core-object
@@ -69,7 +69,7 @@ public class DBSCAN{
 				current_cluster = new DBSCluster(current);
 				
 				// repository of adjacent core-objects
-				queue = new ArrayDeque<County>();
+				stack = new ArrayDeque<County>();
 				
 				// find its neighbors
 				ArrayList<County> neighbors = findNeighbors(current);
@@ -81,15 +81,15 @@ public class DBSCAN{
 					current_cluster.add(c);
 					counties.remove(c);
 					if(isCoreObject(c)){
-						queue.offer(c);
+						stack.push(c);
 					}
 				}
 				
 				// while there exist core-objects
-				while(!queue.isEmpty()){
+				while(!stack.isEmpty()){
 					
 					// dequeue a core-object
-					County core = queue.poll();
+					County core = stack.pop();
 					
 					// find its neighbors
 					neighbors = findNeighbors(core);
@@ -99,7 +99,7 @@ public class DBSCAN{
 						current_cluster.add(c);
 						counties.remove(c);
 						if(isCoreObject(c)){
-							queue.offer(c);
+							stack.push(c);
 						}
 					}
 				}
