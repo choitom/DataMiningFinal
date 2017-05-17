@@ -52,13 +52,14 @@ public class Main{
 		int CURE_num_rep = -1;
 		int DBSCAN_min_pts = -1;
 		double DBSCAN_radius = -1;
+		int KMEANS_cluster_size = -1;
 		
 		String param_file = "param.txt";
 		file = new File(param_file);
 		scan = new Scanner(file);
 		
 		int line_count = 0;
-		while(line_count < 5){
+		while(line_count < 6){
 			String[] line = scan.nextLine().split(" ");
 			String value = line[1];
 			switch(line_count){
@@ -77,6 +78,9 @@ public class Main{
 				case 4:
 					DBSCAN_radius = Double.parseDouble(value);
 					break;
+				case 5:
+					KMEANS_cluster_size = Integer.parseInt(value);
+					break;
 				default:
 					System.err.println("Error\n");
 					System.exit(0);
@@ -90,6 +94,9 @@ public class Main{
 		
 		DBSCAN dbscan = new DBSCAN(counties, distance_type, DBSCAN_min_pts, DBSCAN_radius);
 		dbscan.cluster();
+		
+		Kmeans kmeans = new Kmeans(counties, distance_type, KMEANS_cluster_size);
+		kmeans.cluster();
 	}
 	
 	private static void argCheck(String[] args){
