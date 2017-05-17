@@ -39,6 +39,10 @@ public class Cluster{
 		return this.representatives;
 	}
 	
+	public ArrayList<County> getDataPoints(){
+		return this.dataPoints;
+	}
+	
 	// add a county to cluster
 	public void add(County c){
 		this.cluster.add(c);

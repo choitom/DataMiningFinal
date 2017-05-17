@@ -79,12 +79,39 @@ public class CURE{
 			clusters.get(min_cluster_index).addDataPoint(county);
 		}
 		
+		// print out the result
 		int id = 0;
 		System.out.println("\n\tCURE(Clusting Using REpresentatives) Result\n");
 		for(Cluster c : clusters){
 			System.out.print("Cluster("+ id + ") -> ");
 			c.print();
 			id++;
+		}
+		
+		// export the result to text file
+		exportClusters(clusters);
+	}
+	
+	// export clusters to text file
+	private void exportClusters(ArrayList<Cluster> clusters){
+		try{
+			FileWriter fw = new FileWriter("CURE_RESULT.txt");
+			int id = 0;
+			for(Cluster d : clusters){
+				ArrayList<County> pts = d.getDataPoints();
+				fw.write("Cluster(" + id + "): ");
+				for(int i = 0; i < pts.size(); i++){
+					if(i == pts.size()-1){
+						fw.write(pts.get(i).getID() + "\n");
+					}else{
+						fw.write(pts.get(i).getID() + " ");
+					}
+				}
+				id++;
+			}
+			fw.close();
+		}catch(IOException e){
+			System.out.println("Cluster Export Error");
 		}
 	}
 	

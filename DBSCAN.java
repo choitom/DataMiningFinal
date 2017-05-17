@@ -119,7 +119,7 @@ public class DBSCAN{
 			current = pickValidPoint();
 		}
 		
-		
+		// print out the result
 		int cluster_ID = 0;
 		System.out.println("\n\n\tDBSCAN(Density-Based Spatial Clustering of Application with Noise) Result\n");
 		for(DBSCluster d : clusters){
@@ -127,6 +127,32 @@ public class DBSCAN{
 			cluster_ID++;
 		}
 		System.out.println("NOISE: " + NOISE.size());
+		
+		// export the result to text file
+		exportClusters();
+	}
+	
+	// export clusters to text file
+	private void exportClusters(){
+		try{
+			FileWriter fw = new FileWriter("DBSCAN_RESULT.txt");
+			int id = 0;
+			for(DBSCluster d : clusters){
+				ArrayList<County> pts = d.getDataPoints();
+				fw.write("Cluster(" + id + "): ");
+				for(int i = 0; i < pts.size(); i++){
+					if(i == pts.size()-1){
+						fw.write(pts.get(i).getID() + "\n");
+					}else{
+						fw.write(pts.get(i).getID() + " ");
+					}
+				}
+				id++;
+			}
+			fw.close();
+		}catch(IOException e){
+			System.out.println("Cluster Export Error");
+		}
 	}
 	
 	private boolean isCoreObject(County c){

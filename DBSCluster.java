@@ -17,6 +17,10 @@ public class DBSCluster{
 		this.cluster.add(c);
 	}
 	
+	public ArrayList<County> getDataPoints(){
+		return this.cluster;
+	}
+	
 	public void print(){
 		for(County c : cluster){
 			c.print();
