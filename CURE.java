@@ -95,7 +95,7 @@ public class CURE{
 	// export clusters to text file
 	private void exportClusters(ArrayList<Cluster> clusters){
 		try{
-			FileWriter fw = new FileWriter("CURE_RESULT.txt");
+			FileWriter fw = new FileWriter("Cluster_Result/CURE_RESULT.txt");
 			int id = 0;
 			for(Cluster d : clusters){
 				ArrayList<County> pts = d.getDataPoints();

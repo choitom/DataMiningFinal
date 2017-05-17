@@ -135,7 +135,7 @@ public class DBSCAN{
 	// export clusters to text file
 	private void exportClusters(){
 		try{
-			FileWriter fw = new FileWriter("DBSCAN_RESULT.txt");
+			FileWriter fw = new FileWriter("Cluster_Result/DBSCAN_RESULT.txt");
 			int id = 0;
 			for(DBSCluster d : clusters){
 				ArrayList<County> pts = d.getDataPoints();
