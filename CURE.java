@@ -83,7 +83,7 @@ public class CURE{
 		
 		// print out the result
 		int id = 0;
-		System.out.println("\n\tCURE(Clusting Using REpresentatives) Result\n");
+		System.out.println("\n\tCURE(Clusting Using REpresentatives) Result(" + distance_type + ")\n");
 		for(Cluster c : clusters){
 			System.out.print("Cluster("+ id + ") -> ");
 			c.print();

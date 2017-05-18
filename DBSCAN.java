@@ -123,7 +123,7 @@ public class DBSCAN{
 		
 		// print out the result
 		int cluster_ID = 0;
-		System.out.println("\n\n\tDBSCAN(Density-Based Spatial Clustering of Application with Noise) Result\n");
+		System.out.println("\n\n\tDBSCAN(Density-Based Spatial Clustering of Application with Noise) Result(" + distance_type + ")\n");
 		for(DBSCluster d : clusters){
 			System.out.println("Cluster(" + cluster_ID + "): " + d.size());
 			cluster_ID++;
@@ -131,7 +131,7 @@ public class DBSCAN{
 		System.out.println("NOISE: " + NOISE.size());
 		
 		// export the result to text file
-		exportClusters();
+		//exportClusters();
 	}
 	
 	// export clusters to text file

@@ -1,11 +1,12 @@
-#!bin/bash
+#!/bin/bash
 
 #compile java source files
 javac *.java
 
-fro i in {1970..2020..10}
+for i in {1970..2010..10}
 do
-	echo "Clustering decade: $i"
+	echo "Clustering $i's..."
 	java Main $i "euclidean"
 	java Main $i "manhattan"
+    echo "---------------------------------------------------------------------------"
 done
