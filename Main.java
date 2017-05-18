@@ -92,11 +92,11 @@ public class Main{
 		CURE cure = new CURE(counties, decade, distance_type, CURE_fraction, CURE_cluster_size, CURE_num_rep);
 		cure.cluster();
 		
-		DBSCAN dbscan = new DBSCAN(counties, decade, distance_type, DBSCAN_min_pts, DBSCAN_radius);
-		dbscan.cluster();
-		
 		Kmeans kmeans = new Kmeans(counties, decade, distance_type, KMEANS_cluster_size);
 		kmeans.cluster();
+		
+		DBSCAN dbscan = new DBSCAN(counties, decade, distance_type, DBSCAN_min_pts, DBSCAN_radius);
+		dbscan.cluster();
 	}
 	
 	private static void argCheck(String[] args){

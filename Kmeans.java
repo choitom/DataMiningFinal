@@ -32,16 +32,87 @@ public class Kmeans{
 		initCluster();
 		
 		// while not converged
-		boolean converged = true;
+		boolean converged = false;
 		while(!converged){
+			// clear data points within each cluster
+			for(int i = 0; i < clusters.length; i++){
+				clusters[i].clear();
+			}
+			
+			// store centroids before assignment & update
+			ArrayList<double[]> prev_centroids = new ArrayList<double[]>();
+			for(int i = 0; i < clusters.length; i++){
+				double[] centroid = clusters[i].getCentroid();
+				double[] deep_copy = new double[centroid.length];
+				for(int j = 0; j < centroid.length; j++){
+					deep_copy[j] = centroid[j];
+				}
+				prev_centroids.add(deep_copy);
+			}
+			
 			// assign data points
-		
+			for(int i = 0; i < counties.length; i++){
+				assignDataPoint(counties[i]);
+			}
+			
 			// update centroids
+			for(int i = 0; i < clusters.length; i++){
+				clusters[i].updateCentroid();
+			}
+			
+			// check for convergence
+			double error = 0.01;
+			for(int i = 0; i < clusters.length; i++){
+				converged = (clusters[i].distance(prev_centroids.get(i)) < error) ? true : false;
+			}
 		}
 			
 		// print the clustering result
+		printResult();
 		
-		// export the result to text file
+		// export the result to csv file
+		exportClusters();
+	}
+	
+	private void exportClusters(){
+		String fileName = "Cluster_Result/" + decade + "_" + distance_type + "_KMEANS_RESULT.csv";
+		try{
+			FileWriter fw = new FileWriter(fileName);
+			int id = 0;
+            fw.write("Cluster,FIPS Code\n");
+			for(int i = 0; i < clusters.length; i++){
+				ArrayList<County> pts = clusters[i].getDataPoints();
+				for(int j = 0; j < pts.size(); j++){
+					fw.write(id + "," + pts.get(j).getID() + "\n");
+				}
+				id++;
+			}
+			fw.close();
+		}catch(IOException e){
+			System.out.println("Cluster Export Error");
+		}
+	}
+	
+	private void printResult(){
+		System.out.println("\n\tK-means Clustering Result(" + distance_type + ")\n");
+		for(int i = 0; i < clusters.length; i++){
+			System.out.print("Cluster(" + i + ") -> ");
+			clusters[i].print();
+		}
+	}
+	
+	// assign each data point to the closest cluster
+	private void assignDataPoint(County c){
+		int closestClusterIndex = -1;
+		double closest = Double.MAX_VALUE;
+		for(int i = 0; i < clusters.length; i++){
+			double dist = clusters[i].distance(c.getVector());
+			if(dist < closest){
+				closest = dist;
+				closestClusterIndex = i;
+			}
+		}
+		clusters[closestClusterIndex].add(c);
 	}
 	
 	// randomly select 'k' points for initial cluster centroids
