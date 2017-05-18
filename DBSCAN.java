@@ -26,14 +26,16 @@ public class DBSCAN{
 	private int min_pts;
 	private double radius;
 	private String distance_type;
+	private int decade;
 	private County initial_point;
 	private ArrayList<County> counties;
 	private ArrayList<County> NOISE;
 	private HashSet<DBSCluster> clusters;
 	
-	public DBSCAN(ArrayList<County> c, String distance_type, int min_pts, double radius){
+	public DBSCAN(ArrayList<County> c, int decade, String distance_type, int min_pts, double radius){
 		this.min_pts = min_pts;
 		this.radius = radius;
+		this.decade = decade;
 		this.distance_type = distance_type;
 		this.counties = new ArrayList<County>();
 		this.clusters = new HashSet<DBSCluster>();
@@ -134,18 +136,14 @@ public class DBSCAN{
 	
 	// export clusters to text file
 	private void exportClusters(){
+		String fileName = "Cluster_Result/" + decade + "_" + distance_type + "_DBSCAN_RESULT.csv";
 		try{
-			FileWriter fw = new FileWriter("Cluster_Result/DBSCAN_RESULT.txt");
+			FileWriter fw = new FileWriter(fileName);
 			int id = 0;
 			for(DBSCluster d : clusters){
 				ArrayList<County> pts = d.getDataPoints();
-				fw.write("Cluster(" + id + "): ");
 				for(int i = 0; i < pts.size(); i++){
-					if(i == pts.size()-1){
-						fw.write(pts.get(i).getID() + "\n");
-					}else{
-						fw.write(pts.get(i).getID() + " ");
-					}
+					fw.write(id + "," + pts.get(i).getID() + "\n");
 				}
 				id++;
 			}

@@ -11,11 +11,13 @@ import java.util.*;
 public class Kmeans{
 	private int k;
 	private String distance_type;
+	private int decade;
 	private County[] counties;
 	private KmeansCluster[] clusters;
 	
-	public Kmeans(ArrayList<County> input, String distance_type, int k){
+	public Kmeans(ArrayList<County> input, int decade, String distance_type, int k){
 		this.k = k;
+		this.decade = decade;
 		this.distance_type = distance_type;
 		this.clusters = new KmeansCluster[k];
 		this.counties = new County[input.size()];

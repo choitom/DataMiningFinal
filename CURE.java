@@ -17,12 +17,14 @@ public class CURE{
 	private County[] counties;
 	private County[] samples;
 	private String distance_type;
+	private int decade;
 	private int cluster_size;	// number of clusters to have
 	private int num_rep;		// number of representative points
 	
-	public CURE(ArrayList<County> c, String distance_type, double fraction, int cluster_size, int num_rep){
+	public CURE(ArrayList<County> c, int decade, String distance_type, double fraction, int cluster_size, int num_rep){
 		int sample_size = (int)(c.size() * fraction);
 		this.distance_type = distance_type;
+		this.decade = decade;
 		this.counties = new County[c.size()];
 		this.samples = new County[sample_size];
 		this.cluster_size = cluster_size;
@@ -94,8 +96,9 @@ public class CURE{
 	
 	// export clusters to csv file
 	private void exportClusters(ArrayList<Cluster> clusters){
-        try{
-			FileWriter fw = new FileWriter("Cluster_Result/CURE_RESULT.csv");
+        String fileName = "Cluster_Result/" + decade + "_" + distance_type + "_CURE_RESULT.csv";
+		try{
+			FileWriter fw = new FileWriter(fileName);
 			int id = 0;
             fw.write("Cluster,FIPS Code\n");
 			for(Cluster d : clusters){
