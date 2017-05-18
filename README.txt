@@ -25,4 +25,4 @@
 	   whose number of neighbors is greater than or equal to
 	   a certain threshold.
 	b) user can manipulate parameters such as number of clusters for K-means
-	   and agglomerative clustering.
+	   and agglomerative clustering with in "param.txt".
