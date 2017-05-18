@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<style>
+    .counties {
+        fill: red;
+    }
+
+    .county-borders {
+        fill: none;
+        stroke: #fff;
+        stroke-width: 0.5px;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        pointer-events: none;
+    }
+
+    .legend-label {
+        font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+        font-size: 20px;
+    }
+
+    #choice {
+        margin-left: 500px;
+        font-size: 20px;
+    }
+    h1 {
+        font-size: 28px;
+        width: 960px;
+        text-align: center;
+        font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    }
+</style>
+<h1>Educational Attainment in the US, by County (2011-2015)</h1>
+<svg id="map" width="960" height="600"></svg>
+<svg id="legend-svg" width="150" height="425"></svg>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/topojson.v2.min.js"></script>
+<script>
+
+var map = d3.select("#map");
+var legend = d3.select("#legend-svg");
+var path = d3.geoPath();
+//var colorVars = ["Percent of adults with less than a high school diploma, 2011-2015", "Percent of adults with a high school diploma only, 2011-2015", "Percent of adults completing some college or associate's degree, 2011-2015", "Percent of adults with a bachelor's degree or higher, 2011-2015"];
+
+d3.json("https://d3js.org/us-10m.v1.json", function(error, us) {
+
+    if (error) throw error;
+    
+    d3.csv("Cluster_Result/CURE_RESULT.csv", function(csvData) {
+        
+        countyToData = {};
+        for (var i = 0; i < csvData.length; i++) {
+            
+            if (csvData[i]["FIPS Code"].length == 4) {
+                countyToData["0" + csvData[i]["FIPS Code"]] = csvData[i];
+            }
+            else {
+                countyToData[csvData[i]["FIPS Code"]] = csvData[i];
+            }
+        }
+        
+        function updateMap(selectVal) {
+            
+            var minColor = "#b3ccff";
+            var maxColor = "#003399";
+
+            colorScale = d3.scaleLinear()
+                .domain([0, 80])
+                .range([minColor, maxColor]);
+            
+            map.selectAll("*").remove();
+            legend.selectAll("*").remove();
+            map.append("g")
+                .attr("class", "counties")
+                .selectAll("path")
+                .data(topojson.feature(us, us.objects.counties).features)
+                .enter().append("path")
+                .attr("d", path)
+                .style("fill", function(d) {
+                    size5id = (d.id.length == 4) ? "0" + d.id : d.id;
+                    if (!(size5id in countyToData)) {
+                        return "white";
+                    }
+                    switch(countyToData[size5id]["Cluster"]) {
+                        case "0":
+                            return "yellow";
+                            break;
+                        case "1":
+                            return "blue";
+                            break;
+                        case "2":
+                            return "red";
+                            break;
+                        case "3":
+                            return "green";
+                            break;
+                        case "4":
+                            return "purple";
+                            break;
+                        case "5":
+                            return "orange";
+                            break;
+                        default:
+                            return "black";
+                            break;
+                    }
+//                    return "blue";
+                })
+//                .on("mouseover", function(d) {
+//                    d3.select(this).style("fill-opacity", 0.25);
+//                })
+//                .on("mouseout", function(d) {
+//                    d3.select(this).style("fill-opacity", 1);
+//                })
+//                .append("svg:title")
+//                .text(function(d) {
+//                    return countyToData[d.id]["Area name"] + ", " +
+//                        countyToData[d.id]["State"] + ": " + countyToData[d.id][colorVars[selectVal]] + "%";
+//                })
+                ;
+    
+//            for (var i=0; i<5; i++) {
+//                var g = legend.append("g")
+//                    .attr("transform", "translate(" + 5 + "," + (20 + 40*i) + ")");
+//                g.append("text")
+//                    .attr("class", "legend-label")
+//                    .attr("x", 30)
+//                    .attr("y", 28)
+//                    .text(i*20 + "%");
+//                g.append("rect")
+//                    .attr("width", 15)
+//                    .attr("height", 40)
+//                    .attr("fill", colorScale(i*20));
+//            }
+        }
+//        d3.select("#choice")
+//        .on("change", function() {
+//            var newData = eval(d3.select(this).property("value"));
+//            updateMap(newData);
+//        });
+        updateMap(3);
+    });
+
+    map.append("path")
+        .attr("class", "county-borders")
+        .attr("d", path(topojson.mesh(us, us.objects.counties, function(a, b) { return a !== b; })));
+});
+
+</script>

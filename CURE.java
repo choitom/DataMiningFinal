@@ -97,10 +97,11 @@ public class CURE{
         try{
 			FileWriter fw = new FileWriter("Cluster_Result/CURE_RESULT.csv");
 			int id = 0;
+            fw.write("Cluster,FIPS Code\n");
 			for(Cluster d : clusters){
 				ArrayList<County> pts = d.getDataPoints();
 				for(int i = 0; i < pts.size(); i++){
-					fw.write(id + ", " + pts.get(i).getID() + "\n");
+					fw.write(id + "," + pts.get(i).getID() + "\n");
 				}
 				id++;
 			}
