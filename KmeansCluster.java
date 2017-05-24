@@ -11,6 +11,15 @@ public class KmeansCluster{
 	private String distance_type;
 	private double[] centroid;
 	private ArrayList<County> cluster;
+    //Compares Clusters by subjective quality of distribution
+    //(Bachelor's or higher is really good, less than high school is really bad)
+    public static Comparator<KmeansCluster> COMPARE_BY_QUALITY = new Comparator<KmeansCluster>() {
+        public int compare(KmeansCluster cluster1, KmeansCluster cluster2) {
+            double totalVal1 = 3*cluster1.centroid[3] + cluster1.centroid[2] - cluster1.centroid[1] - 3*cluster1.centroid[0];
+            double totalVal2 = 3*cluster2.centroid[3] + cluster2.centroid[2] - cluster1.centroid[1] - 3*cluster2.centroid[0];
+            return Double.compare(totalVal1, totalVal2);
+        }
+    };
 	
 	public KmeansCluster(String distance_type){
 		this.distance_type = distance_type;

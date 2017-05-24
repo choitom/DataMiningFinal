@@ -81,7 +81,7 @@ public class CURE{
 			clusters.get(min_cluster_index).addDataPoint(county);
 		}
 		
-        Collections.sort(clusters, Cluster.COMPARE_BY_BACHELORS);
+        Collections.sort(clusters, Cluster.COMPARE_BY_QUALITY);
         
 		// print out the result
 		int id = 0;

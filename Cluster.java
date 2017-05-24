@@ -17,9 +17,13 @@ public class Cluster{
 	private ArrayList<County> representatives;
 	private double[] centroid;
 	private String distance_type;
-    public static Comparator<Cluster> COMPARE_BY_BACHELORS = new Comparator<Cluster>() {
+    // Compares Clusters by subjective quality of distribution
+    // (Bachelor's or higher is really good, less than high school is really bad)
+    public static Comparator<Cluster> COMPARE_BY_QUALITY = new Comparator<Cluster>() {
         public int compare(Cluster cluster1, Cluster cluster2) {
-            return Double.compare(cluster1.centroid[0], cluster2.centroid[0]);
+            double totalVal1 = 3*cluster1.centroid[3] + cluster1.centroid[2] - cluster1.centroid[1] - 3*cluster1.centroid[0];
+            double totalVal2 = 3*cluster2.centroid[3] + cluster2.centroid[2] - cluster1.centroid[1] - 3*cluster2.centroid[0];
+            return Double.compare(totalVal1, totalVal2);
         }
     };
 	

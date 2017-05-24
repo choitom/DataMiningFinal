@@ -66,6 +66,11 @@ public class Kmeans{
 				converged = (clusters[i].distance(prev_centroids.get(i)) < error) ? true : false;
 			}
 		}
+        
+        // sort array of clusters by temporarily converting it to list
+        List<KmeansCluster> clusterList = Arrays.asList(clusters);
+        Collections.sort(clusterList, KmeansCluster.COMPARE_BY_QUALITY);
+        clusters = clusterList.toArray(new KmeansCluster[clusterList.size()]);
 			
 		// print the clustering result
 		printResult();
