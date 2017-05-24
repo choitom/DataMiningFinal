@@ -81,6 +81,8 @@ public class CURE{
 			clusters.get(min_cluster_index).addDataPoint(county);
 		}
 		
+        Collections.sort(clusters, Cluster.COMPARE_BY_BACHELORS);
+        
 		// print out the result
 		int id = 0;
 		System.out.println("\n\tCURE(Clusting Using REpresentatives) Result(" + distance_type + ")\n");

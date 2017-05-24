@@ -17,6 +17,11 @@ public class Cluster{
 	private ArrayList<County> representatives;
 	private double[] centroid;
 	private String distance_type;
+    public static Comparator<Cluster> COMPARE_BY_BACHELORS = new Comparator<Cluster>() {
+        public int compare(Cluster cluster1, Cluster cluster2) {
+            return Double.compare(cluster1.centroid[0], cluster2.centroid[0]);
+        }
+    };
 	
 	public Cluster(String distance_type){
 		this.distance_type = distance_type;
