@@ -159,6 +159,7 @@ public class Main{
 			c.print();
 		}
 		exportClusters(clusters, "CURE");
+		exportCentroids(clusters, "CURE");
 	}
 	
 	private static void KmeansCluster(){
@@ -173,25 +174,35 @@ public class Main{
 	
 	private static void exportClusters(Cluster[] clusters, String cluster_type){
         String fileName = "Cluster_Result/" + decade + "_" + distance_type + "_" + cluster_type +"_RESULT.csv";
-		ArrayList<double[]> centroids = new ArrayList<double[]>();
 		try{
 			FileWriter fw = new FileWriter(fileName);
 			int id = 0;
             fw.write("Cluster,FIPS Code\n");
 			for(Cluster d : clusters){
-				centroids.add(d.getCentroid());
 				ArrayList<County> pts = d.getDataPoints();
 				for(int i = 0; i < pts.size(); i++){
 					fw.write(id + "," + pts.get(i).getID() + "\n");
 				}
 				id++;
 			}
-			for(double[] c : centroids){
-				fw.write(c[0] + "," + c[1] + "," + c[2] + "," + c[3] + "\n");
-			}
 			fw.close();
 		}catch(IOException e){
 			System.out.println("Cluster Export Error");
+		}
+	}
+	
+	private static void exportCentroids(Cluster[] clusters, String cluster_type){
+		String fileName = "Cluster_Result/" + decade + "_" + distance_type + "_" + cluster_type + "_CENTROID.csv";
+		try{
+			FileWriter fw = new FileWriter(fileName);
+			fw.write("Less than High School,High School,Some College,Bachelors or Above\n");
+			for(Cluster c : clusters){
+				double[] p = c.getCentroid();
+				fw.write(p[0] + "," + p[1] + "," + p[2] + "," + p[3] + "\n");
+			}
+			fw.close();
+		}catch(IOException e){
+			System.out.println("Cluster Centroid Export Error");
 		}
 	}
 }

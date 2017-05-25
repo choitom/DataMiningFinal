@@ -77,6 +77,22 @@ public class Kmeans{
 		
 		// export the result to csv file
 		exportClusters();
+		exportCentroids();
+	}
+	
+	private void exportCentroids(){
+		String fileName = "Cluster_Result/" + decade + "_" + distance_type + "_KMEANS_CENTROID.csv";
+		try{
+			FileWriter fw = new FileWriter(fileName);
+			fw.write("Less than High School,High School,Some College,Bachelors or Above\n");
+			for(int i = 0; i < clusters.length; i++){
+				double[] p = clusters[i].getCentroid();
+				fw.write(p[0] + "," + p[1] + "," + p[2] + "," + p[3] + "\n");
+			}
+			fw.close();
+		}catch(IOException e){
+			System.out.println("Cluster Centroid Export Error");
+		}
 	}
 	
 	private void exportClusters(){
