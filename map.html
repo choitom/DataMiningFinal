@@ -63,14 +63,20 @@
 var map = d3.select("#map");
 var path = d3.geoPath();
 
-function updateMap(file) {
+function updateMap(countyFile, centroidFile) {
     d3.json("https://d3js.org/us-10m.v1.json", function(error, us) {
         if (error) throw error;
-        
-        d3.csv(file, function(csvData) {
-
+        var centroids = new Array[6];
+        d3.csv(centroidFile, function(csvData) {
+        }
+        d3.csv(countyFile, function(csvData) {
+//            centroids = {};
+//            for (var i = 0; i < 6; i++) {
+//                centroids[i] = csvData[csvData.length - 6 + i];
+//            }
+//            console.log(centroids);
             countyToData = {};
-            for (var i = 0; i < csvData.length; i++) {
+            for (var i = 0; i < csvData.length - 6; i++) {
 
                 if (csvData[i]["FIPS Code"].length == 4) {
                     countyToData["0" + csvData[i]["FIPS Code"]] = csvData[i];
@@ -115,7 +121,15 @@ function updateMap(file) {
                             return "black";
                             break;
                     }
-                });
+                })
+//                .on("mouseover", function(d) {
+//                    console.log(centroids[d.id]);
+//                })
+//                .append("svg:title")
+//                .text(function(d) {
+//                    return csvData[csvData.length - 6 + parseInt(d.id, 10)];
+//                })
+                ;
         });
 //        map.append("path")
 //            .attr("class", "county-borders")
@@ -128,7 +142,7 @@ d3.select("#choice")
         updateMap(newData);
         console.log(newData);
     });
-updateMap("Cluster_Result/1970_euclidean_CURE_RESULT.csv");
+updateMap("Cluster_Result/1970_euclidean_CURE_RESULT.csv", "Cluster_Result/1970_euclidean_CURE_CENTROID.csv");
 
 
 
