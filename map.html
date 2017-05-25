@@ -32,26 +32,26 @@
     }
 </style>
 <select id="choice">
-    <option value="Cluster_Result/1970_euclidean_CURE_RESULT.csv">CURE euclidean 1970</option>
-    <option value="Cluster_Result/1980_euclidean_CURE_RESULT.csv">CURE euclidean 1980</option>
-    <option value="Cluster_Result/1990_euclidean_CURE_RESULT.csv">CURE euclidean 1990</option>
-    <option value="Cluster_Result/2000_euclidean_CURE_RESULT.csv">CURE euclidean 2000</option>
-    <option value="Cluster_Result/2010_euclidean_CURE_RESULT.csv">CURE euclidean 2011-2015</option>
-    <option value="Cluster_Result/1970_euclidean_KMEANS_RESULT.csv">K-Means euclidean 1970</option>
-    <option value="Cluster_Result/1980_euclidean_KMEANS_RESULT.csv">K-Means euclidean 1980</option>
-    <option value="Cluster_Result/1990_euclidean_KMEANS_RESULT.csv">K-Means euclidean 1990</option>
-    <option value="Cluster_Result/2000_euclidean_KMEANS_RESULT.csv">K-Means euclidean 2000</option>
-    <option value="Cluster_Result/2010_euclidean_KMEANS_RESULT.csv">K-Means euclidean 2015</option>
-    <option value="Cluster_Result/1970_manhattan_CURE_RESULT.csv">CURE manhattan 1970</option>
-    <option value="Cluster_Result/1980_manhattan_CURE_RESULT.csv">CURE manhattan 1980</option>
-    <option value="Cluster_Result/1990_manhattan_CURE_RESULT.csv">CURE manhattan 1990</option>
-    <option value="Cluster_Result/2000_manhattan_CURE_RESULT.csv">CURE manhattan 2000</option>
-    <option value="Cluster_Result/2010_manhattan_CURE_RESULT.csv">CURE manhattan 2011-2015</option>
-    <option value="Cluster_Result/1970_manhattan_KMEANS_RESULT.csv">K-Means manhattan 1970</option>
-    <option value="Cluster_Result/1980_manhattan_KMEANS_RESULT.csv">K-Means manhattan 1980</option>
-    <option value="Cluster_Result/1990_manhattan_KMEANS_RESULT.csv">K-Means manhattan 1990</option>
-    <option value="Cluster_Result/2000_manhattan_KMEANS_RESULT.csv">K-Means manhattan 2000</option>
-    <option value="Cluster_Result/2010_manhattan_KMEANS_RESULT.csv">K-Means manhattan 2015</option>
+    <option value="Cluster_Result/1970_euclidean_CURE_">CURE euclidean 1970</option>
+    <option value="Cluster_Result/1980_euclidean_CURE_">CURE euclidean 1980</option>
+    <option value="Cluster_Result/1990_euclidean_CURE_">CURE euclidean 1990</option>
+    <option value="Cluster_Result/2000_euclidean_CURE_">CURE euclidean 2000</option>
+    <option value="Cluster_Result/2010_euclidean_CURE_">CURE euclidean 2011-2015</option>
+    <option value="Cluster_Result/1970_euclidean_KMEANS_">K-Means euclidean 1970</option>
+    <option value="Cluster_Result/1980_euclidean_KMEANS_">K-Means euclidean 1980</option>
+    <option value="Cluster_Result/1990_euclidean_KMEANS_">K-Means euclidean 1990</option>
+    <option value="Cluster_Result/2000_euclidean_KMEANS_">K-Means euclidean 2000</option>
+    <option value="Cluster_Result/2010_euclidean_KMEANS_">K-Means euclidean 2015</option>
+    <option value="Cluster_Result/1970_manhattan_CURE_">CURE manhattan 1970</option>
+    <option value="Cluster_Result/1980_manhattan_CURE_">CURE manhattan 1980</option>
+    <option value="Cluster_Result/1990_manhattan_CURE_">CURE manhattan 1990</option>
+    <option value="Cluster_Result/2000_manhattan_CURE_">CURE manhattan 2000</option>
+    <option value="Cluster_Result/2010_manhattan_CURE_">CURE manhattan 2011-2015</option>
+    <option value="Cluster_Result/1970_manhattan_KMEANS_">K-Means manhattan 1970</option>
+    <option value="Cluster_Result/1980_manhattan_KMEANS_">K-Means manhattan 1980</option>
+    <option value="Cluster_Result/1990_manhattan_KMEANS_">K-Means manhattan 1990</option>
+    <option value="Cluster_Result/2000_manhattan_KMEANS_">K-Means manhattan 2000</option>
+    <option value="Cluster_Result/2010_manhattan_KMEANS_">K-Means manhattan 2015</option>
 </select>
 <br>
 <svg id="map" width="960" height="600"></svg>
@@ -63,20 +63,22 @@
 var map = d3.select("#map");
 var path = d3.geoPath();
 
-function updateMap(countyFile, centroidFile) {
+function updateMap(file) {
     d3.json("https://d3js.org/us-10m.v1.json", function(error, us) {
         if (error) throw error;
-        var centroids = new Array[6];
-        d3.csv(centroidFile, function(csvData) {
-        }
-        d3.csv(countyFile, function(csvData) {
-//            centroids = {};
-//            for (var i = 0; i < 6; i++) {
-//                centroids[i] = csvData[csvData.length - 6 + i];
-//            }
-//            console.log(centroids);
+        var centroids = [];
+        d3.csv(file + "CENTROID.csv", function(csvData) {
+            for (var i = 0; i < csvData.length; i++) {
+                var lths = csvData[i]["Less than High School"].substring(0,5);
+                var hs = csvData[i]["High School"].substring(0,5);
+                var sc = csvData[i]["Some College"].substring(0,5);
+                var boa = csvData[i]["Bachelors or Above"].substring(0,5);
+                centroids.push( "Cluster centroid: " + lths + "%, " + hs + "%, " + sc + "%, " + boa + "%");
+            }
+        });
+        d3.csv(file + "RESULT.csv", function(csvData) {
             countyToData = {};
-            for (var i = 0; i < csvData.length - 6; i++) {
+            for (var i = 0; i < csvData.length; i++) {
 
                 if (csvData[i]["FIPS Code"].length == 4) {
                     countyToData["0" + csvData[i]["FIPS Code"]] = csvData[i];
@@ -94,13 +96,13 @@ function updateMap(countyFile, centroidFile) {
                 .enter().append("path")
                 .attr("d", path)
                 .style("fill", function(d) {
-                    size5id = (d.id.length == 4) ? "0" + d.id : d.id;
+                    var size5id = (d.id.length == 4) ? "0" + d.id : d.id;
                     if (!(size5id in countyToData)) {
                         return "white";
                     }
                     switch(countyToData[size5id]["Cluster"]) {
                         case "0":
-                            return "#e41a1c";
+                            return "#984ea3";
                             break;
                         case "1":
                             return "#4daf4a";
@@ -109,7 +111,7 @@ function updateMap(countyFile, centroidFile) {
                             return "#377eb8";
                             break;
                         case "3":
-                            return "#984ea3";
+                            return "#e41a1c";
                             break;
                         case "4":
                             return "#ff7f00";
@@ -122,14 +124,19 @@ function updateMap(countyFile, centroidFile) {
                             break;
                     }
                 })
-//                .on("mouseover", function(d) {
-//                    console.log(centroids[d.id]);
-//                })
-//                .append("svg:title")
-//                .text(function(d) {
-//                    return csvData[csvData.length - 6 + parseInt(d.id, 10)];
-//                })
-                ;
+                .on("mouseover", function(d) {
+                    d3.select(this).style("fill-opacity", 0.25);
+                })
+                .on("mouseout", function(d) {
+                    d3.select(this).style("fill-opacity", 1);
+                })
+                .append("svg:title")
+                .text(function(d) {
+                    var size5id = (d.id.length == 4) ? "0" + d.id : d.id;
+                    if (countyToData[size5id]) {
+                        return centroids[parseInt(countyToData[size5id]["Cluster"], 10)];
+                    }
+                });
         });
 //        map.append("path")
 //            .attr("class", "county-borders")
@@ -140,9 +147,8 @@ d3.select("#choice")
     .on("change", function() {
         var newData = d3.select(this).property("value");
         updateMap(newData);
-        console.log(newData);
     });
-updateMap("Cluster_Result/1970_euclidean_CURE_RESULT.csv", "Cluster_Result/1970_euclidean_CURE_CENTROID.csv");
+updateMap("Cluster_Result/1970_euclidean_CURE_");
 
 
 
