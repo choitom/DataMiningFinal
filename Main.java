@@ -11,10 +11,20 @@ import java.io.*;
 import java.util.*;
 
 public class Main{
+	private static double CURE_fraction = -1;
+	private static int CURE_cluster_size = -1;
+	private static int CURE_num_rep = -1;
+	private static int DBSCAN_min_pts = -1;
+	private static double DBSCAN_radius = -1;
+	private static int KMEANS_cluster_size = -1;
+	private static int decade = -1;
+	private static String distance_type;
+	private static ArrayList<County> counties;
+	
 	public static void main(String[] args) throws IOException{
 		argCheck(args);
-		int decade = Integer.parseInt(args[0]);
-		String distance_type = args[1];
+		decade = Integer.parseInt(args[0]);
+		distance_type = args[1];
 		
 		// read input file
 		String input_file = "Education.csv";
@@ -22,7 +32,7 @@ public class Main{
 		Scanner scan = new Scanner(file);
 		
 		// list of counties
-		ArrayList<County> counties = new ArrayList<County>();
+		counties = new ArrayList<County>();
 		int index = 3 + 4*((decade-1970)/10);
 		
 		while(scan.hasNextLine()){
@@ -46,13 +56,6 @@ public class Main{
 			}
 		}
 		
-		// read parameters
-		double CURE_fraction = -1;
-		int CURE_cluster_size = -1;
-		int CURE_num_rep = -1;
-		int DBSCAN_min_pts = -1;
-		double DBSCAN_radius = -1;
-		int KMEANS_cluster_size = -1;
 		
 		String param_file = "param.txt";
 		file = new File(param_file);
@@ -89,14 +92,9 @@ public class Main{
 			line_count++;
 		}
 		
-		CURE cure = new CURE(counties, decade, distance_type, CURE_fraction, CURE_cluster_size, CURE_num_rep);
-		cure.cluster();
-		
-		Kmeans kmeans = new Kmeans(counties, decade, distance_type, KMEANS_cluster_size);
-		kmeans.cluster();
-		
-		DBSCAN dbscan = new DBSCAN(counties, decade, distance_type, DBSCAN_min_pts, DBSCAN_radius);
-		dbscan.cluster();
+		CURECluster();
+		KmeansCluster();
+		DBSCANCluster();
 	}
 	
 	private static void argCheck(String[] args){
@@ -104,6 +102,91 @@ public class Main{
 			System.out.println("Please Enter: java Main Decade Distance_Type");
 			System.out.println("(Ex) java Main 2010 manhattan  OR  java Main 2000 euclidean");
 			System.exit(0);
+		}
+	}
+	
+	private static void CURECluster(){
+		HashMap<Integer, int[]> countyMatchings = new HashMap<Integer, int[]>();
+		for(County c : counties){
+			int[] v = new int[CURE_cluster_size];
+			countyMatchings.put(c.getID(), v);
+		}
+		
+		for(int i = 0; i < 30; i++){
+			CURE cure = new CURE(counties, decade, distance_type, CURE_fraction, CURE_cluster_size, CURE_num_rep);
+			ArrayList<Cluster> clusters = cure.cluster();
+			int cluster_ID = 0;
+			for(Cluster c : clusters){
+				ArrayList<County> dataPoints = c.getDataPoints();
+				for(County county : dataPoints){
+					int id = county.getID();
+					int[] v = countyMatchings.get(id);
+					v[cluster_ID]++;
+					countyMatchings.put(id,v);
+				}
+				cluster_ID++;
+			}
+		}
+		
+		// set of (County_ID, County)
+		HashMap<Integer, County> map = new HashMap<Integer, County>();
+		for(County c : counties){
+			map.put(c.getID(), c);
+		}
+		
+		Cluster[] clusters = new Cluster[CURE_cluster_size];
+		for(int i = 0; i < CURE_cluster_size; i++){
+			clusters[i] = new Cluster(distance_type);
+		}
+		
+		for(int County_ID : countyMatchings.keySet()){
+			int[] votes = countyMatchings.get(County_ID);
+			int maxVote = votes[0];
+			int maxIndex = 0;
+			for(int i = 1; i < votes.length; i++){
+				if(votes[i] > maxVote){
+					maxVote = votes[i];
+					maxIndex = i;
+				}
+			}
+			County c = map.get(County_ID);
+			
+			// assign it to the cluster with max vote
+			clusters[maxIndex].addDataPoint(c);
+		}
+		
+		for(Cluster c : clusters){
+			c.print();
+		}
+		exportClusters(clusters, "CURE");
+	}
+	
+	private static void KmeansCluster(){
+		Kmeans kmeans = new Kmeans(counties, decade, distance_type, KMEANS_cluster_size);
+		kmeans.cluster();
+	}
+	
+	private static void DBSCANCluster(){
+		DBSCAN dbscan = new DBSCAN(counties, decade, distance_type, DBSCAN_min_pts, DBSCAN_radius);
+		dbscan.cluster();
+	}
+	
+	private static void exportClusters(Cluster[] clusters, String cluster_type){
+        String fileName = "Cluster_Result/" + decade + "_" + distance_type + "_" + cluster_type +"_RESULT.csv";
+		try{
+			FileWriter fw = new FileWriter(fileName);
+			int id = 0;
+            fw.write("Cluster,FIPS Code\n");
+			for(Cluster d : clusters){
+				ArrayList<County> pts = d.getDataPoints();
+				for(int i = 0; i < pts.size(); i++){
+					fw.write(id + "," + pts.get(i).getID() + "\n");
+				}
+				id++;
+			}
+			fw.close();
+		}catch(IOException e){
+			System.out.println("Cluster Export Error");
 		}
 	}
 }

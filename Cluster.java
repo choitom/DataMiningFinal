@@ -55,11 +55,12 @@ public class Cluster{
 	// add a county to cluster
 	public void add(County c){
 		this.cluster.add(c);
-		updateCentroid();
+		updateCentroid(cluster);
 	}
 	
 	public void addDataPoint(County c){
 		this.dataPoints.add(c);
+		updateCentroid(dataPoints);
 	}
 	
 	// pick representative points from the cluster
@@ -162,10 +163,10 @@ public class Cluster{
 		return dist;
 	}
 	
-	private void updateCentroid(){
-		int size = cluster.size();
+	private void updateCentroid(ArrayList<County> list){
+		int size = list.size();
 		double[] sum = new double[4];
-		for(County c : cluster){
+		for(County c : list){
 			double[] v = c.getVector();
 			for(int i = 0; i < v.length; i++){
 				sum[i] += v[i];

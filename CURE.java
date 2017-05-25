@@ -37,7 +37,7 @@ public class CURE{
 		randomSamples(sample_size);
 	}
 	
-	public void cluster(){
+	public ArrayList<Cluster> cluster(){
 		// First part: pick representative points using agglomerative clustering
 		ArrayList<Cluster> clusters = new ArrayList<Cluster>();
 		ArrayList<Double> sses = new ArrayList<Double>();
@@ -84,16 +84,18 @@ public class CURE{
         Collections.sort(clusters, Cluster.COMPARE_BY_QUALITY);
         
 		// print out the result
-		int id = 0;
-		System.out.println("\n\tCURE(Clusting Using REpresentatives) Result(" + distance_type + ")\n");
-		for(Cluster c : clusters){
-			System.out.print("Cluster("+ id + ") -> ");
-			c.print();
-			id++;
-		}
+		//int id = 0;
+		//System.out.println("\n\tCURE(Clusting Using REpresentatives) Result(" + distance_type + ")\n");
+		//for(Cluster c : clusters){
+		//	System.out.print("Cluster("+ id + ") -> ");
+		//	c.print();
+		//	id++;
+		//}
 		
 		// export the result to text file
-		exportClusters(clusters);
+		//exportClusters(clusters);
+		
+		return clusters;
 	}
 	
 	// export clusters to csv file
