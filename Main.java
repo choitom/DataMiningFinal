@@ -173,16 +173,21 @@ public class Main{
 	
 	private static void exportClusters(Cluster[] clusters, String cluster_type){
         String fileName = "Cluster_Result/" + decade + "_" + distance_type + "_" + cluster_type +"_RESULT.csv";
+		ArrayList<double[]> centroids = new ArrayList<double[]>();
 		try{
 			FileWriter fw = new FileWriter(fileName);
 			int id = 0;
             fw.write("Cluster,FIPS Code\n");
 			for(Cluster d : clusters){
+				centroids.add(d.getCentroid());
 				ArrayList<County> pts = d.getDataPoints();
 				for(int i = 0; i < pts.size(); i++){
 					fw.write(id + "," + pts.get(i).getID() + "\n");
 				}
 				id++;
+			}
+			for(double[] c : centroids){
+				fw.write(c[0] + "," + c[1] + "," + c[2] + "," + c[3] + "\n");
 			}
 			fw.close();
 		}catch(IOException e){

@@ -81,16 +81,21 @@ public class Kmeans{
 	
 	private void exportClusters(){
 		String fileName = "Cluster_Result/" + decade + "_" + distance_type + "_KMEANS_RESULT.csv";
+		ArrayList<double[]> centroids = new ArrayList<double[]>();
 		try{
 			FileWriter fw = new FileWriter(fileName);
 			int id = 0;
             fw.write("Cluster,FIPS Code\n");
 			for(int i = 0; i < clusters.length; i++){
+				centroids.add(clusters[i].getCentroid());
 				ArrayList<County> pts = clusters[i].getDataPoints();
 				for(int j = 0; j < pts.size(); j++){
 					fw.write(id + "," + pts.get(j).getID() + "\n");
 				}
 				id++;
+			}
+			for(double[] c : centroids){
+				fw.write(c[0] + "," + c[1] + "," + c[2] + "," + c[3] + "\n");
 			}
 			fw.close();
 		}catch(IOException e){
