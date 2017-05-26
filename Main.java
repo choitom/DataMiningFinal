@@ -112,7 +112,7 @@ public class Main{
 			countyMatchings.put(c.getID(), v);
 		}
 		
-		for(int i = 0; i < 30; i++){
+		for(int i = 0; i < 100; i++){
 			CURE cure = new CURE(counties, decade, distance_type, CURE_fraction, CURE_cluster_size, CURE_num_rep);
 			ArrayList<Cluster> clusters = cure.cluster();
 			int cluster_ID = 0;
