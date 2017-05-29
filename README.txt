@@ -3,6 +3,8 @@
 	- The script will execute all clustering algorithms
 	  for each decade from 1970 to 2010 for Euclidean and Manhattan distances.
 	- Once it finishes clustering, it prints out number of data points assigned to each cluster
+    - To view results on map, run "python3 -m http.server" then open "http://127.0.0.1:8000/map.html" in a browser.
+    - To view some analysis of the output, run "python3 analyze.py"
 
 2. What if you want to pick a single decade and distance type?
 	Compile: javac *.java

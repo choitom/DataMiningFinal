@@ -20,39 +20,61 @@
     }
 
     #choice {
-        margin-left: 1000px;
-        margin-top: 20px;
         font-size: 20px;
     }
+    
+    #menu {
+        margin-left: 1000px;
+        margin-top: 20px;
+    }
+    
+    #map {
+        position: relative;
+        top: -220px;
+    }
+    
     h1 {
         font-size: 28px;
         width: 960px;
         text-align: center;
         font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
     }
+    
 </style>
-<select id="choice">
-    <option value="Cluster_Result/1970_euclidean_CURE_">CURE euclidean 1970</option>
-    <option value="Cluster_Result/1980_euclidean_CURE_">CURE euclidean 1980</option>
-    <option value="Cluster_Result/1990_euclidean_CURE_">CURE euclidean 1990</option>
-    <option value="Cluster_Result/2000_euclidean_CURE_">CURE euclidean 2000</option>
-    <option value="Cluster_Result/2010_euclidean_CURE_">CURE euclidean 2011-2015</option>
-    <option value="Cluster_Result/1970_euclidean_KMEANS_">K-Means euclidean 1970</option>
-    <option value="Cluster_Result/1980_euclidean_KMEANS_">K-Means euclidean 1980</option>
-    <option value="Cluster_Result/1990_euclidean_KMEANS_">K-Means euclidean 1990</option>
-    <option value="Cluster_Result/2000_euclidean_KMEANS_">K-Means euclidean 2000</option>
-    <option value="Cluster_Result/2010_euclidean_KMEANS_">K-Means euclidean 2015</option>
-    <option value="Cluster_Result/1970_manhattan_CURE_">CURE manhattan 1970</option>
-    <option value="Cluster_Result/1980_manhattan_CURE_">CURE manhattan 1980</option>
-    <option value="Cluster_Result/1990_manhattan_CURE_">CURE manhattan 1990</option>
-    <option value="Cluster_Result/2000_manhattan_CURE_">CURE manhattan 2000</option>
-    <option value="Cluster_Result/2010_manhattan_CURE_">CURE manhattan 2011-2015</option>
-    <option value="Cluster_Result/1970_manhattan_KMEANS_">K-Means manhattan 1970</option>
-    <option value="Cluster_Result/1980_manhattan_KMEANS_">K-Means manhattan 1980</option>
-    <option value="Cluster_Result/1990_manhattan_KMEANS_">K-Means manhattan 1990</option>
-    <option value="Cluster_Result/2000_manhattan_KMEANS_">K-Means manhattan 2000</option>
-    <option value="Cluster_Result/2010_manhattan_KMEANS_">K-Means manhattan 2015</option>
-</select>
+<div id="menu">
+    <select id="choice">
+        <option value="Cluster_Result/1970_euclidean_CURE_">CURE euclidean 1970</option>
+        <option value="Cluster_Result/1980_euclidean_CURE_">CURE euclidean 1980</option>
+        <option value="Cluster_Result/1990_euclidean_CURE_">CURE euclidean 1990</option>
+        <option value="Cluster_Result/2000_euclidean_CURE_">CURE euclidean 2000</option>
+        <option value="Cluster_Result/2010_euclidean_CURE_">CURE euclidean 2011-2015</option>
+        <option value="Cluster_Result/1970_manhattan_CURE_">CURE manhattan 1970</option>
+        <option value="Cluster_Result/1980_manhattan_CURE_">CURE manhattan 1980</option>
+        <option value="Cluster_Result/1990_manhattan_CURE_">CURE manhattan 1990</option>
+        <option value="Cluster_Result/2000_manhattan_CURE_">CURE manhattan 2000</option>
+        <option value="Cluster_Result/2010_manhattan_CURE_">CURE manhattan 2011-2015</option>
+        <option value="Cluster_Result/1970_euclidean_KMEANS_">K-Means euclidean 1970</option>
+        <option value="Cluster_Result/1980_euclidean_KMEANS_">K-Means euclidean 1980</option>
+        <option value="Cluster_Result/1990_euclidean_KMEANS_">K-Means euclidean 1990</option>
+        <option value="Cluster_Result/2000_euclidean_KMEANS_">K-Means euclidean 2000</option>
+        <option value="Cluster_Result/2010_euclidean_KMEANS_">K-Means euclidean 2015</option>
+        <option value="Cluster_Result/1970_manhattan_KMEANS_">K-Means manhattan 1970</option>
+        <option value="Cluster_Result/1980_manhattan_KMEANS_">K-Means manhattan 1980</option>
+        <option value="Cluster_Result/1990_manhattan_KMEANS_">K-Means manhattan 1990</option>
+        <option value="Cluster_Result/2000_manhattan_KMEANS_">K-Means manhattan 2000</option>
+        <option value="Cluster_Result/2010_manhattan_KMEANS_">K-Means manhattan 2015</option>
+    </select>
+    <br><br>
+    <h6>"Best" to "Worst" Clusters:</h6>
+    <ol>
+        <li>Yellow</li>
+        <li>Orange</li>
+        <li>Red</li>
+        <li>Blue</li>
+        <li>Green</li>
+        <li>Purple</li>
+    </ol>
+</div>
 <br>
 <svg id="map" width="960" height="600"></svg>
 
@@ -125,7 +147,7 @@ function updateMap(file) {
                     }
                 })
                 .on("mouseover", function(d) {
-                    d3.select(this).style("fill-opacity", 0.25);
+                    d3.select(this).style("fill-opacity", 0.6);
                 })
                 .on("mouseout", function(d) {
                     d3.select(this).style("fill-opacity", 1);
@@ -138,9 +160,6 @@ function updateMap(file) {
                     }
                 });
         });
-//        map.append("path")
-//            .attr("class", "county-borders")
-//            .attr("d", path(topojson.mesh(us, us.objects.counties, function(a, b) { return a !== b; })));
     });
 }
 d3.select("#choice")
